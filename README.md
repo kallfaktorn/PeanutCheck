@@ -1,4 +1,5 @@
---- PeanutCheck
+PeanutCheck
+==============
 
 A convenient way to tell if there are peanuts in a product.
 
