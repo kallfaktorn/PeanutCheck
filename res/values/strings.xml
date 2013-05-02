@@ -7,8 +7,12 @@
     <string name="button_scan_again">Scanna igen </string>
     <string name="title_ok">OK</string>
     <string name="title_warning">Varning</string>
+    <string name="title_watch_out">Se upp!</string>
     <string name="title_error">Fel</string>
     <string name="title_problem">Problem</string>
+    <string name="text_contains_peanuts">Den här produkten innehåller jordnötter.</string>
+    <string name="text_may_contain_peanuts">Den här produkten kan innehålla spår av jordnötter.</string>
+    <string name="text_may_contain_nuts">Den här produkten kan innehålla spår av nötter.</string>
     <string name="text_peanuts">Den här produkten kan innehålla jordnötter.</string>
     <string name="text_no_peanuts">Den här produkten skall inte innehålla jordnötter.</string>
     <string name="text_read_more">Läs mer om produkten genom att&#160;</string>

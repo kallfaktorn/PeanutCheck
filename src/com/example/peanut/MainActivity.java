@@ -7,12 +7,14 @@ import android.app.Activity;
 import android.content.Intent;
 
 public class MainActivity extends Activity {
+	
+	private Intent resumeIntent = null;
 
 	@Override
  	public void onCreate(Bundle savedInstanceState) {
   		super.onCreate(savedInstanceState);
 
-  		setContentView(R.layout.activity_main);
+  		//setContentView(R.layout.activity_main);
 
   		// TODO: webPage = executeHttpGet
   		// *     make jsonObject
@@ -49,8 +51,19 @@ public class MainActivity extends Activity {
 				startActivity(resultIntent);
 
 			} else if (resultCode == RESULT_CANCELED) {
+				resumeIntent = intent;
+				moveTaskToBack(true);
 			}
 		} else {
 		}
+	}
+
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    
+	    Intent intent = getIntent();
+	    finish();
+	    startActivity(intent);
 	}
 }

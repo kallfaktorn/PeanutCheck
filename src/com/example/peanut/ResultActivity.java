@@ -39,8 +39,6 @@ public class ResultActivity extends Activity  {
             String webPage = "http://openfooddb.com/food_stuffs/bar_code/";
         	webPage += barCode;
         	
-        	String output = "Den här produkten kunde inte hittas i databasen.";
-        	
             try {
     			String foodStuff = Utils.executeHttpGet(webPage);
     			
@@ -52,19 +50,44 @@ public class ResultActivity extends Activity  {
     			{
     				foodStuffJSON = new JSONObject(foodStuff);
     				
-    				boolean has_peanuts = false;
-    				has_peanuts =  foodStuff.contains("peanut") || foodStuff.contains("jordnöt");
+    				//boolean has_peanuts = false;
+    				//has_peanuts =  foodStuff.contains("peanut") || foodStuff.contains("jordnöt");
     				
-    				if(has_peanuts == true)
+    				if(foodStuff.contains("Kan innehålla spår av jordnötter"))
     				{
-    					displayWarningView();
-    					//output = "Se upp! Den här produkten kan innehålla jordnötter";
+    					displayWatchOutView(R.string.text_may_contain_peanuts);
+    				}
+    				else if(foodStuff.contains("Kan innehålla spår av nötter"))
+    				{
+    					displayWatchOutView(R.string.text_may_contain_nuts);
+    				}
+    				else if(foodStuff.contains("Kan innehålla spår av andra nötter"))
+    				{
+    					displayWatchOutView(R.string.text_may_contain_nuts);
+    				}
+    				else if(foodStuff.contains("jordnötsfri"))
+    				{
+    					displayOkView();
+    	    		}
+    				else if(foodStuff.contains("jordnöt"))
+    				{
+    					displayWatchOutView(R.string.text_contains_peanuts);
     				}
     				else
     				{
     					displayOkView();
-    					//output = "Den här produkten skall inte innehålla jordnötter";
     				}
+    				
+//    				if(has_peanuts == true)
+//    				{
+//    					displayWarningView();
+//    					//output = "Se upp! Den här produkten kan innehålla jordnötter";
+//    				}
+//    				else
+//    				{
+//    					displayOkView();
+//    					//output = "Den här produkten skall inte innehålla jordnötter";
+//    				}
     			}
     			
     		} catch (Exception e) {
@@ -86,11 +109,6 @@ public class ResultActivity extends Activity  {
         		startActivity(mainIntent);
             }
         });
-        
-        //displayProblemView();
-        //displayOkView();
-        //displayFailView();
-        //displayWarningView();
 	}
 	
 	private boolean isConnected()
@@ -189,7 +207,7 @@ public class ResultActivity extends Activity  {
 		layout_read_more.setVisibility(View.VISIBLE);
 	}
 
-	private void displayWarningView()
+	private void displayWatchOutView(int ResourceStringId)
 	{
 		TextView text_title = (TextView) findViewById(R.id.title);
 		text_title.setTextColor(getResources().getColor(R.color.orange));
@@ -200,7 +218,7 @@ public class ResultActivity extends Activity  {
 		
 		TextView text_general = (TextView) findViewById(R.id.general);
 		text_general.setGravity(Gravity.CENTER_HORIZONTAL);
-		text_general.setText(R.string.text_peanuts);
+		text_general.setText(ResourceStringId);
 		
 		LinearLayout layout_general = (LinearLayout) findViewById(R.id.layout_general);
 		layout_general.setVisibility(View.VISIBLE);
