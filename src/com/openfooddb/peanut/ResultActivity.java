@@ -1,4 +1,4 @@
-package com.example.peanut;
+package com.openfooddb.peanut;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.juicepick.R;
+import com.openfooddb.peanut.R;
 
 public class ResultActivity extends Activity  {
 	
@@ -49,11 +49,13 @@ public class ResultActivity extends Activity  {
     			else
     			{
     				foodStuffJSON = new JSONObject(foodStuff);
-    				
-    				//boolean has_peanuts = false;
-    				//has_peanuts =  foodStuff.contains("peanut") || foodStuff.contains("jordnöt");
+    				foodStuff = foodStuffJSON.toString();
     				
     				if(foodStuff.contains("Kan innehålla spår av jordnötter"))
+    				{
+    					displayWatchOutView(R.string.text_may_contain_peanuts);
+    				}
+    				else if(foodStuff.contains("kan innehålla spår av jordnötter"))
     				{
     					displayWatchOutView(R.string.text_may_contain_peanuts);
     				}
@@ -61,14 +63,30 @@ public class ResultActivity extends Activity  {
     				{
     					displayWatchOutView(R.string.text_may_contain_nuts);
     				}
+    				else if(foodStuff.contains("kan innehålla spår av nötter"))
+    				{
+    					displayWatchOutView(R.string.text_may_contain_nuts);
+    				}
     				else if(foodStuff.contains("Kan innehålla spår av andra nötter"))
     				{
     					displayWatchOutView(R.string.text_may_contain_nuts);
     				}
+    				else if(foodStuff.contains("kan innehålla spår av andra nötter"))
+    				{
+    					displayWatchOutView(R.string.text_may_contain_nuts);
+    				}
+    				else if(foodStuff.contains("Jordnötsfri"))
+    				{
+    					displayOkView();
+    	    		}
     				else if(foodStuff.contains("jordnötsfri"))
     				{
     					displayOkView();
     	    		}
+    				else if(foodStuff.contains("Jordnöt"))
+    				{
+    					displayWatchOutView(R.string.text_contains_peanuts);
+    				}
     				else if(foodStuff.contains("jordnöt"))
     				{
     					displayWatchOutView(R.string.text_contains_peanuts);
@@ -77,17 +95,6 @@ public class ResultActivity extends Activity  {
     				{
     					displayOkView();
     				}
-    				
-//    				if(has_peanuts == true)
-//    				{
-//    					displayWarningView();
-//    					//output = "Se upp! Den här produkten kan innehålla jordnötter";
-//    				}
-//    				else
-//    				{
-//    					displayOkView();
-//    					//output = "Den här produkten skall inte innehålla jordnötter";
-//    				}
     			}
     			
     		} catch (Exception e) {
@@ -115,7 +122,7 @@ public class ResultActivity extends Activity  {
 	{
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		
+
 		if (netInfo != null && netInfo.isConnected() && netInfo.isAvailable()) {
 		   
 			return true;
@@ -211,7 +218,7 @@ public class ResultActivity extends Activity  {
 	{
 		TextView text_title = (TextView) findViewById(R.id.title);
 		text_title.setTextColor(getResources().getColor(R.color.orange));
-		text_title.setText(R.string.title_warning);
+		text_title.setText(R.string.title_watch_out);
 		
 		LinearLayout layout_title = (LinearLayout) findViewById(R.id.layout_title);
 		layout_title.setVisibility(View.VISIBLE);

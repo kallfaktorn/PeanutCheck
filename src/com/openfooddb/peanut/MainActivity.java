@@ -1,6 +1,6 @@
-package com.example.peanut;
+package com.openfooddb.peanut;
 
-import com.example.juicepick.R;
+import com.openfooddb.peanut.R;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -58,12 +58,12 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	@Override
-	protected void onResume() {
-	    super.onResume();
-	    
-	    Intent intent = getIntent();
-	    finish();
-	    startActivity(intent);
-	}
+//	@Override
+//	protected void onResume() {
+//	    super.onResume();
+//	    
+//	    Intent intent = getIntent();
+//	    finish();
+//	    startActivity(intent);
+//	}
 }
