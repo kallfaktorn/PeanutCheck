@@ -4,11 +4,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.Gravity;
@@ -17,11 +19,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.openfooddb.peanut.R;
-
 public class ResultActivity extends Activity  {
 	
-	JSONObject foodStuffJSON = null;
+	private JSONObject foodStuffJSON = null;
+	
+	private String webPage = null;
+	private String foodStuff = null;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,87 +39,12 @@ public class ResultActivity extends Activity  {
         {
         	Intent intent = getIntent();
             String barCode = intent.getStringExtra("BARCODE");
-            String webPage = "http://openfooddb.com/food_stuffs/bar_code/";
+            webPage = "http://openfooddb.com/food_stuffs/bar_code/";
         	webPage += barCode;
-        	
-            try {
-    			String foodStuff = Utils.executeHttpGet(webPage);
-    			
-    			if(foodStuff.equals("null\n"))
-    			{
-    				displayProblemView();
-    			}
-    			else
-    			{
-    				foodStuffJSON = new JSONObject(foodStuff);
-    				foodStuff = foodStuffJSON.toString();
-    				
-    				if(foodStuff.contains("Kan innehålla spår av jordnötter"))
-    				{
-    					displayWatchOutView(R.string.text_may_contain_peanuts);
-    				}
-    				else if(foodStuff.contains("kan innehålla spår av jordnötter"))
-    				{
-    					displayWatchOutView(R.string.text_may_contain_peanuts);
-    				}
-    				else if(foodStuff.contains("Kan innehålla spår av nötter"))
-    				{
-    					displayWatchOutView(R.string.text_may_contain_nuts);
-    				}
-    				else if(foodStuff.contains("kan innehålla spår av nötter"))
-    				{
-    					displayWatchOutView(R.string.text_may_contain_nuts);
-    				}
-    				else if(foodStuff.contains("Kan innehålla spår av andra nötter"))
-    				{
-    					displayWatchOutView(R.string.text_may_contain_nuts);
-    				}
-    				else if(foodStuff.contains("kan innehålla spår av andra nötter"))
-    				{
-    					displayWatchOutView(R.string.text_may_contain_nuts);
-    				}
-    				else if(foodStuff.contains("Jordnötsfri"))
-    				{
-    					displayOkView();
-    	    		}
-    				else if(foodStuff.contains("jordnötsfri"))
-    				{
-    					displayOkView();
-    	    		}
-    				else if(foodStuff.contains("Jordnöt"))
-    				{
-    					displayWatchOutView(R.string.text_contains_peanuts);
-    				}
-    				else if(foodStuff.contains("jordnöt"))
-    				{
-    					displayWatchOutView(R.string.text_contains_peanuts);
-    				}
-    				else
-    				{
-    					displayOkView();
-    				}
-    			}
-    			
-    		} catch (Exception e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
+
+        	new MyAsyncTask().execute();
         }
-        
-        LinearLayout layout_scan_again = (LinearLayout) findViewById(R.id.layout_scan_again);
-        layout_scan_again.setVisibility(View.VISIBLE);
-        
-        Button button_scan= (Button) findViewById(R.id.button_scan);
-        button_scan.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-            	Intent mainIntent = new Intent(ResultActivity.this, MainActivity.class);
-        		startActivity(mainIntent);
-            }
-        });
-	}
+    }
 	
 	private boolean isConnected()
 	{
@@ -130,12 +58,7 @@ public class ResultActivity extends Activity  {
 		
 		else return false;
 	}
-	
-	private void displayScanAgainButton(String url)
-	{
 		
-	}
-	
 	private void displayProblemView()
 	{
 		TextView text_title = (TextView) findViewById(R.id.title);
@@ -256,4 +179,113 @@ public class ResultActivity extends Activity  {
 			e.printStackTrace();
 		}
 	}
+	
+	private void displayView()
+	{
+		if(foodStuff.equals("null\n"))
+		{
+			displayProblemView();
+		}
+		else
+		{
+			try {
+				foodStuffJSON = new JSONObject(foodStuff);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			foodStuff = foodStuffJSON.toString();
+				
+			if(foodStuff.contains("Kan innehålla spår av jordnötter"))
+			{
+				displayWatchOutView(R.string.text_may_contain_peanuts);
+			}
+			else if(foodStuff.contains("kan innehålla spår av jordnötter"))
+			{
+				displayWatchOutView(R.string.text_may_contain_peanuts);
+			}
+			else if(foodStuff.contains("Kan innehålla spår av nötter"))
+			{
+				displayWatchOutView(R.string.text_may_contain_nuts);
+			}
+			else if(foodStuff.contains("kan innehålla spår av nötter"))
+			{
+				displayWatchOutView(R.string.text_may_contain_nuts);
+			}
+			else if(foodStuff.contains("Kan innehålla spår av andra nötter"))
+			{
+				displayWatchOutView(R.string.text_may_contain_nuts);
+			}
+			else if(foodStuff.contains("kan innehålla spår av andra nötter"))
+			{
+				displayWatchOutView(R.string.text_may_contain_nuts);
+			}
+			else if(foodStuff.contains("Jordnötsfri"))
+			{
+				displayOkView();
+    		}
+			else if(foodStuff.contains("jordnötsfri"))
+			{
+				displayOkView();
+    		}
+			else if(foodStuff.contains("Jordnöt"))
+			{
+				displayWatchOutView(R.string.text_contains_peanuts);
+			}
+			else if(foodStuff.contains("jordnöt"))
+			{
+				displayWatchOutView(R.string.text_contains_peanuts);
+			}
+			else
+			{
+				displayOkView();
+			}
+		}
+		
+		LinearLayout layout_scan_again = (LinearLayout) findViewById(R.id.layout_scan_again);
+        layout_scan_again.setVisibility(View.VISIBLE);
+        
+        Button button_scan= (Button) findViewById(R.id.button_scan);
+        button_scan.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+            	Intent mainIntent = new Intent(ResultActivity.this, MainActivity.class);
+        		startActivity(mainIntent);
+            }
+        });
+	}
+	
+	private class MyAsyncTask extends AsyncTask<Void, Void, Void>
+    {
+
+        ProgressDialog mProgressDialog;
+        @Override
+        protected void onPostExecute(Void result) {
+        	
+        	displayView();
+        	
+            mProgressDialog.dismiss();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(ResultActivity.this, "Vänta...", "Bearbetar data...");
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+           // your network operation
+        	
+        	try {
+				foodStuff = Utils.executeHttpGet(webPage);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            return null;
+        }
+    }
 }
